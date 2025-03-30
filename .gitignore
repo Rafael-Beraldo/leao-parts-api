@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+dist/
+*.log
+yarn.lock
+package-lock.json
+
+# Ambiente
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+
+# Build
+build/
+out/
+
+# MacOS/Linux
+.DS_Store
