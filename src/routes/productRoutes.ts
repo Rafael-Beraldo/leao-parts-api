@@ -1,20 +1,15 @@
 import express from "express";
-import {
-  createProduct,
-  getProducts,
-  getProductById,
-  updateProduct
-} from "../controllers/productController";
-import { authenticateJWT } from "../middleware/authMiddleware"; 
+import { createProduct, updateProduct, getProducts, getProductById } from "../controllers/productController";
+import { authenticateJWT } from "../middleware/authMiddleware";
+import multer from "multer";
 
 const router = express.Router();
 
-router.post("/products", authenticateJWT, createProduct);
+const upload = multer({ dest: "uploads/" });
 
+router.post("/products", authenticateJWT, upload.single("image"), createProduct);
+router.put("/products/:id", authenticateJWT, upload.single("image"), updateProduct);
 router.get("/products", getProducts);
-
 router.get("/products/:id", getProductById);
-
-router.put("/products/:id", authenticateJWT, updateProduct);
 
 export default router;
