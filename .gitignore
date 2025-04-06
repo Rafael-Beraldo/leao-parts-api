@@ -30,3 +30,4 @@ out/
 
 # MacOS/Linux
 .DS_Store
+.vercel

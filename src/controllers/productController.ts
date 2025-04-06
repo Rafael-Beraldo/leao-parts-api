@@ -1,31 +1,18 @@
 import { Request, Response } from "express";
-
 import { supabase } from "../config/supabase";
-
-import fs from "fs";
 import path from "path";
 import multer from "multer";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage }).single("image");
+const storage = multer.memoryStorage();
+export const upload = multer({ storage }).single("image");
 
 const uploadImageToSupabase = async (
   file: Express.Multer.File,
   fileName: string
 ) => {
-  const fileBuffer = fs.readFileSync(file.path);
-
   const { data, error } = await supabase.storage
     .from("product-images")
-    .upload(`public/${fileName}`, fileBuffer, {
+    .upload(`public/${fileName}`, file.buffer, {
       cacheControl: "3600",
       upsert: true,
     });

@@ -4,9 +4,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-// Rotas e middleware
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
+
 import { authenticateJWT } from "./middleware/authMiddleware";
 
 dotenv.config();
@@ -15,7 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://leao-parts.vercel.app"],
+    origin: ["http://localhost:5080", "https://leao-parts.vercel.app"],
     credentials: true,
   })
 );
@@ -28,6 +28,12 @@ declare global {
       user?: JwtPayload;
     }
   }
+}
+
+if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
+  app.listen(5080, () => {
+    console.log("🧪 Ambiente local: servidor rodando na porta 5080");
+  });
 }
 
 app.get("/api/health-check", (req: Request, res: Response) => {
@@ -45,4 +51,4 @@ app.get("/api/protected", authenticateJWT, (req: Request, res: Response) => {
   }
 });
 
-export const handler = serverless(app);
+export default app;

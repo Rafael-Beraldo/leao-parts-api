@@ -1,26 +1,19 @@
 import express from "express";
-
-import multer from "multer";
-
 import {
   createProduct,
   updateProduct,
   getProducts,
   getProductById,
   searchProductsByName,
+  upload,
 } from "../controllers/productController";
 
 import { authenticateJWT } from "../middleware/authMiddleware";
 
 const router = express.Router();
-const upload = multer({ dest: "uploads/" });
 
-router.post(
-  "/products",
-  upload.single("image"),
-  authenticateJWT,
-  createProduct
-);
+router.post("/products", upload, authenticateJWT, createProduct);
+
 router.get("/products", getProducts);
 router.get("/products/:id", getProductById);
 router.get("/products/search", searchProductsByName);
