@@ -1,14 +1,13 @@
 import express, { Request, Response } from "express";
-
+import serverless from "serverless-http";
 import dotenv from "dotenv";
-
+import cors from "cors";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { authenticateJWT } from "./middleware/authMiddleware";
 
+// Rotas e middleware
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
-
-import cors from "cors";
+import { authenticateJWT } from "./middleware/authMiddleware";
 
 dotenv.config();
 
@@ -16,7 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5080", "https://leao-parts.vercel.app"],
+    origin: ["http://localhost:3000", "https://leao-parts.vercel.app"],
     credentials: true,
   })
 );
@@ -31,14 +30,14 @@ declare global {
   }
 }
 
-app.get("/health-check", (req: Request, res: Response) => {
-  res.send("Ping!");
+app.get("/api/health-check", (req: Request, res: Response) => {
+  res.send("API online!");
 });
 
-app.use(userRoutes);
-app.use(productRoutes);
+app.use("/api", userRoutes);
+app.use("/api", productRoutes);
 
-app.get("/protected", authenticateJWT, (req: Request, res: Response) => {
+app.get("/api/protected", authenticateJWT, (req: Request, res: Response) => {
   if (req.user) {
     res.json({ message: "Você está autenticado!", user: req.user });
   } else {
@@ -46,7 +45,4 @@ app.get("/protected", authenticateJWT, (req: Request, res: Response) => {
   }
 });
 
-const PORT = process.env.PORT || 5080;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+export const handler = serverless(app);
